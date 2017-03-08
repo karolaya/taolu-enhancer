@@ -42,11 +42,11 @@ Enter the created directory, create a new one named `release` and access it:
 
     cd opencv
     mkdir release && cd release
-We are going to build opencv with cmake (obviously), and need to make your to
+We are going to build opencv with cmake (obviously), and need to make sure to
 install it in our desired directory with Python 3 in mind. Run the command as
 follows:
 
-    cmake -D CMAKE_TYPE=RELEASE -D CMAKE_PREFIX=/opt/opencv3 -D PYTHON_DEFAULT_EXECUTABLE=$HOME/py-envs/taolu/bin/python3
+    cmake -D CMAKE_TYPE=RELEASE -D CMAKE_PREFIX=/opt/opencv3 -D PYTHON_DEFAULT_EXECUTABLE=$HOME/py-envs/taolu/bin/python3 ..
 
 Then make and install it:
 
@@ -57,6 +57,42 @@ have ignore the following). Look for a file in
 `/opt/opencv/lib/python3.6/site-packages` of the form `cv2.XXX.so`. All you need
 to do is link it to the correct `site-packages` location.
 
+    ln -s /opt/opencv/lib/python3.6/site-packages/cv2.XXX.so ~/py-envs/taolu/lib/python3.6/site-packages/cv2.so
+That should give you a smooth install of OpenCV.
+
+## OpenKinect (libfreenect)
+To operate the Kinect in Linux, we need the `libfreenect` library. You will need `libusb` and `glut`; you install it more or less like this:
+
+    sudo pacman -S libusb freeglut
+    
+For Debian based systems it is (I am not sure):
+
+    sudo apt-get install libusb-dev freeglut3-dev
+Clone the `libfreenect` repository:
+
+    git clone https://github.com/OpenKinect/libfreenect.git
+Create a directory within what you cloned, named `build` and access it:
+    
+    cd libfreenect
+    mkdir build && cd build
+    
+We need to make sure `libfreenect` installs with Python and OpenCV support. Run `cmake` as follows:
+
+    cmake -D BUILD_PYTHON3=ON -D BUILD_CV=ON ..
+    make
+    sudo make install
+    
+For some reason, `sudo make install` does not copy the libraries in `build/lib` to where it should (if you thing it did for you, skip this part). All we need to do is copy them via brute force:
+    
+    cd lib
+    sudo cp -R . /lib
+To test your installation (this is important), connect your Kinect and do the following:
+
+    cd /usr/local/bin
+    sudo freenect-glview
+If you see a video screen activating you are OK.
+
+You are welcome.
 
 
 
