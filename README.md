@@ -9,7 +9,7 @@ A platform that measures the performance of a person in a specific form of marti
 * Sphinx: to build the documentation,
 * virtualenv
 
-### Work team
+## Work team
 * Karolay Ardila Salazar
 * Julián Sibaja García
 * Andrés Simancas Mateus
