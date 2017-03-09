@@ -84,7 +84,7 @@ We need to make sure `libfreenect` installs with Python and OpenCV support. Run 
     make
     sudo make install
     
-For some reason, `sudo make install` does not copy the libraries in `build/lib` to where it should (if you thing it did for you, skip this part). All we need to do is copy them via brute force:
+For some reason, `sudo make install` does not copy the libraries in `build/lib` to where it should (if you think it did for you, skip this part). All we need to do is copy them via brute force:
     
     cd lib
     sudo cp -R . /lib
