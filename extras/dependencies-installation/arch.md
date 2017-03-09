@@ -94,6 +94,8 @@ To test your installation (this is important), connect your Kinect and do the fo
     sudo freenect-glview
 If you see a video screen activating you are OK.
 
+The python wrapper should have been installed for python2. We need to change that by deleting the line `#!/usr/bin/env python` from all the scripts into the folder `(path_to_git_clone)/libfreenect/wrappers/python` and executing `python setup.py install`.
+
 You are welcome.
 
 
