@@ -61,13 +61,15 @@ to do is link it to the correct `site-packages` location.
 That should give you a smooth install of OpenCV.
 
 ## OpenKinect (libfreenect)
-To operate the Kinect in Linux, we need the `libfreenect` library. You will need `libusb` and `glut`; you install it more or less like this:
+To operate the Kinect in Linux, we need the `libfreenect` library. You will need `libusb`, `glut` and `cython`; you install it more or less like this:
 
     sudo pacman -S libusb freeglut
+    sudo pip install cython
     
 For Debian based systems it is (I am not sure):
 
-    sudo apt-get install libusb-dev freeglut3-dev
+    sudo apt-get install libusb-dev libusb-1.0-0-dev freeglut3-dev
+    
 Clone the `libfreenect` repository:
 
     git clone https://github.com/OpenKinect/libfreenect.git
