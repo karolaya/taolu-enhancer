@@ -21,5 +21,5 @@ class VideoBuffer(Thread):
             d3 = np.dstack((depth, depth, depth)).astype(np.uint8)
             da = np.hstack((d3,rgb))
 
-            cv2.imshow('both', np.array(da[::2,::2,::1]))
+            cv2.imshow('both', np.array(da[::2,::2,::-1]))
             cv2.waitKey(5)
