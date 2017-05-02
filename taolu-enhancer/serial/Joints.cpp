@@ -1,15 +1,16 @@
 //------------------------------------------------------------------------------
 // Proyecto Final PDI 
 // Autores: 
-// Karolay Ardila
-// Julián Sibaja
-// Andrés Simancas
+// Karolay Ardila Salazar
+// Julián Sibaja García
+// Andrés Simancas Mateus
 //------------------------------------------------------------------------------
 
 #include "stdafx.h"
 #include <strsafe.h>
-#include "SkeletonBasics.h"
+#include "Joints.h"
 #include "resource.h"
+
 #include <string>
 #include <iostream>
 
@@ -29,8 +30,7 @@ int Connect2Kinect::Initialize()
 	if (FAILED(hr)) {
 		return 1;
 	}
-	return 1;
-	/*
+	
 	// Iterate over the kinects found
 	for(int i = 0; i < iSensorCount; ++i) {
 		// Create the sensor to check the status, if we can not, move onto the next
@@ -65,7 +65,7 @@ int Connect2Kinect::Initialize()
 
 	if (NULL == m_pNuiSensor || FAILED(hr)) {
 		return 2;
-	}*/
+	}
 
 	return 0;
 };
@@ -86,8 +86,31 @@ void Connect2Kinect::Update(void)
 
 void Connect2Kinect::ProcessData(void) 
 {
-	string Saludo("Successful, we have data");
+	// Create the frame
+	NUI_SKELETON_FRAME skeletonFrame = { 0 };
+	HRESULT hr = m_pNuiSensor->NuiSkeletonGetNextFrame(0, &skeletonFrame);
+	if (FAILED(hr)) {
+		return;
+	}
+
+	// Smooth the obtained skeleton data
+	m_pNuiSensor->NuiTransformSmooth(&skeletonFrame, NULL);
+
+	getData(&skeletonFrame);
+
+	string Saludo("Successful, we have data\n");
 	cout << Saludo;
+}
+
+void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
+{
+	for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
+		const NUI_SKELETON_DATA &skeleton = sframe->SkeletonData[i];
+
+		// Extract skeleton joints
+		float t = skeleton.SkeletonPositions[NUI_SKELETON_POSITION_HEAD].x;
+		printf("%f\n", t);
+	}
 }
 
 int main() {

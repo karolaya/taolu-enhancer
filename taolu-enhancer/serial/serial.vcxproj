@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(KINECTSDK10_DIR)\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(KINECTSDK10_DIR)\lib\x86;$(WindowsSdkDir)lib;$(LibraryPath);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(KINECTSDK10_DIR)inc;$(IncludePath);</IncludePath>
+    <LibraryPath>$(KINECTSDK10_DIR)lib\x86;$(WindowsSdkDir)lib;$(LibraryPath);$(KINECT_TOOLKIT_DIR)lib\x86</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,6 +81,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>Kinect10.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="SkeletonBasics.h" />
+    <ClInclude Include="Joints.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

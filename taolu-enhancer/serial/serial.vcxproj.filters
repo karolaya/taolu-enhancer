@@ -19,10 +19,10 @@
     <ClInclude Include="stdafx.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="SkeletonBasics.h">
+    <ClInclude Include="resource.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="Joints.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
