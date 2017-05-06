@@ -13,9 +13,3 @@ def calculateAngleProjection(central, superior, inferior):
     angle = np.dot(sup_vector, inf_vector)/(np.linalg.norm(sup_vector)*np.linalg.norm(inf_vector))
 
     return angle
-
-a = Joint(2, 2, 2)
-b = Joint(3, 3.5, 3)
-c = Joint(4, 4, 4.2)
-
-print(calculateAngleProjection(a, b, c))
