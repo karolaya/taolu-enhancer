@@ -12,6 +12,7 @@
 #include "resource.h"
 
 #include <string>
+#include <sstream>
 #include <iostream>
 
 using namespace std;
@@ -19,6 +20,32 @@ using namespace std;
 static const float g_JointThickness = 3.0f;
 static const float g_TrackedBoneThickness = 6.0f;
 static const float g_InferredBoneThickness = 1.0f;
+int index_joint[20] = {
+	NUI_SKELETON_POSITION_HIP_CENTER,
+	NUI_SKELETON_POSITION_SPINE,
+	NUI_SKELETON_POSITION_SHOULDER_CENTER,
+	NUI_SKELETON_POSITION_HEAD,
+	NUI_SKELETON_POSITION_SHOULDER_LEFT,
+	NUI_SKELETON_POSITION_ELBOW_LEFT,
+	NUI_SKELETON_POSITION_WRIST_LEFT,
+	NUI_SKELETON_POSITION_HAND_LEFT,
+	NUI_SKELETON_POSITION_SHOULDER_RIGHT,
+	NUI_SKELETON_POSITION_ELBOW_RIGHT,
+	NUI_SKELETON_POSITION_WRIST_RIGHT,
+	NUI_SKELETON_POSITION_HAND_RIGHT,
+	NUI_SKELETON_POSITION_HIP_LEFT,
+	NUI_SKELETON_POSITION_KNEE_LEFT,
+	NUI_SKELETON_POSITION_ANKLE_LEFT,
+	NUI_SKELETON_POSITION_FOOT_LEFT,
+	NUI_SKELETON_POSITION_HIP_RIGHT,
+	NUI_SKELETON_POSITION_KNEE_RIGHT,
+	NUI_SKELETON_POSITION_ANKLE_RIGHT,
+	NUI_SKELETON_POSITION_FOOT_RIGHT
+};
+float x;
+float y;
+float z;
+string datos = "";
 
 int Connect2Kinect::Initialize()
 {
@@ -108,8 +135,20 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 		const NUI_SKELETON_DATA &skeleton = sframe->SkeletonData[i];
 
 		// Extract skeleton joints
-		float t = skeleton.SkeletonPositions[NUI_SKELETON_POSITION_HEAD].x;
-		printf("%f\n", t);
+		for (int k = 0; k < 20; ++k) {
+			x = skeleton.SkeletonPositions[index_joint[k]].x;
+			y = skeleton.SkeletonPositions[index_joint[k]].y;
+			z = skeleton.SkeletonPositions[index_joint[k]].z;
+
+			if (x != 0 && y != 0 && z != 0) {
+				ostringstream oss;
+				oss << x << "," << y << "," << z << ";";
+				datos = oss.str() + datos;
+			}
+		}
+		//printf(datos);
+		cout << datos << "\n";
+		datos = "";
 	}
 }
 
