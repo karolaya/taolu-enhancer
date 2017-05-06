@@ -126,7 +126,7 @@ void Connect2Kinect::ProcessData(void)
 	getData(&skeletonFrame);
 
 	string Saludo("Successful, we have data\n");
-	cout << Saludo;
+	//cout << Saludo;
 }
 
 void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
@@ -147,7 +147,9 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 			}
 		}
 		//printf(datos);
-		cout << datos << "\n";
+		if (!datos.empty()) {
+			cout << datos << "\n";
+		}
 		datos = "";
 	}
 }
