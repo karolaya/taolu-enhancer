@@ -1,7 +1,6 @@
 import numpy as np
 from collections import namedtuple
 from definitions import Joints
-from definitions import Projections
 
 Joint = namedtuple('Joint', ['x', 'y', 'z'])
 
