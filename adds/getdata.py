@@ -4,7 +4,7 @@
 import subprocess
 proc = subprocess.Popen("C:\Users\Public\serial.exe",stdin=subprocess.PIPE,stdout=subprocess.PIPE)
 
-state = "run"
-while state == "run":
-    cppMessage = proc.stdout.readline().rstrip("\n") 
-    print "data ->" + cppMessage + " \n"
+while 1:
+    message = proc.stdout.read(640)
+    print message
+    print "------------------------"

@@ -12,7 +12,8 @@ class Connect2Kinect {
 	HANDLE m_hNextSkeletonEvent;
 public:
 	int Initialize(void);
-	void Update(void);
+	void Update(int);
 	void ProcessData(void);
 	void getData(NUI_SKELETON_FRAME* pf);
+	int getDataRGB(int* pdata);
 };
