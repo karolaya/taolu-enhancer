@@ -34,3 +34,6 @@ class Projections:
     ANGLE_ARM_HIPLINE_L = 11
     ANGLE_THIGH_HIPLINE_R = 12
     ANGLE_THIGH_HIPLINE_L = 13
+
+class moves:
+    

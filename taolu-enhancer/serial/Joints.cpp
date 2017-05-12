@@ -131,23 +131,39 @@ void Connect2Kinect::Update(int data_type)
 		}
 		else{
 			getDataRGB(p_data);
-
+			ostringstream oss;
 			//string row = "";
-			int dummy[3840];
+			//int dummy[3840];
 			for (int i = 0; i < height; ++i) {
 				for (int j = 0; j < width; j = j + 4) {
-					dummy[j] = p_data[i*height + j];
-					dummy[j + 1] = p_data[i*height + j + 1];
-					dummy[j + 2] = p_data[i*height + j + 2];
+					//dummy[j] = p_data[i*height + j];
+					//dummy[j + 1] = p_data[i*height + j + 1];
+					//dummy[j + 2] = p_data[i*height + j + 2];
+					if (j != width - 1) {
+						oss << p_data[i*height + j] << "," << p_data[i*height + j + 1] << "," << p_data[i*height + j + 2] << ",";
+					}
+					else {
+						oss << p_data[i*height + j] << "," << p_data[i*height + j + 1] << "," << p_data[i*height + j + 2] << ";";
+					}
+					datos = oss.str() + datos;
 				}
-
-				fwrite((const void*)&dummy, sizeof(int), 3840, stdout);
-				fflush(stdout);
+				if (!datos.empty()) {
+					//cout << datos.size();
+					//fwrite(&datos, sizeof(string), datos.size(), stdout);
+					//fflush(stdout);
+					//datos = "";
+				}
+				
+				//cout << "compreme un coco";
+				//fwrite((const void*)&dummy, sizeof(int), 3840, stdout);
+				//fflush(stdout);
 			}
 			//cout << dummy[1] << " - ";
 			//printf("%i\n", dummy[1]);
 
 			// [¡] Send to python here [!]
+			cout << "compreme un coco";
+			
 		}
 	}
 }
@@ -176,7 +192,7 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 		const NUI_SKELETON_DATA &skeleton = sframe->SkeletonData[i];
 
 		// Extract skeleton joints
-		for (int k = 0; k < 20; ++k) {
+		for (int k = 0; k < 20; ++k){
 			x = skeleton.SkeletonPositions[index_joint[k]].x;
 			y = skeleton.SkeletonPositions[index_joint[k]].y;
 			z = skeleton.SkeletonPositions[index_joint[k]].z;
@@ -240,8 +256,8 @@ int main() {
 		cout << Saludo;
 
 		while (1) {
-			cin >> py_message;
-
+			//cin >> py_message;
+			py_message = RGB_CODE;
 			if (py_message == STANDBY_CODE) {
 				// :v pos no hago nada
 			}
