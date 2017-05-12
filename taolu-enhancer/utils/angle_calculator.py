@@ -1,10 +1,7 @@
 import numpy as np
 from collections import namedtuple
 from definitions import Joints
-
-OFFSET = 0.1
-
-Joint = namedtuple('Joint', ['x', 'y', 'z'])
+import sqlite3
 
 def calculateAngleProjection(central, superior, inferior):
     # Build vectors based on request
@@ -16,3 +13,10 @@ def calculateAngleProjection(central, superior, inferior):
     angle = np.arccos(cos_angle)
 
     return angle
+    
+OFFSET = 0.1
+Joint = namedtuple('Joint', ['x', 'y', 'z'])
+
+
+
+    

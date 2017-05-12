@@ -10,10 +10,21 @@
 #include <strsafe.h>
 #include "Joints.h"
 #include "resource.h"
-
+#include <stdint.h>
 #include <string>
 #include <sstream>
 #include <iostream>
+
+#define width 640
+#define height 480
+
+#define STANDBY_CODE 0
+#define JOINTS_CODE 1
+#define RGB_CODE 2
+
+HANDLE rgbStream;
+BYTE dataRGB [width*height*4];
+int p_data[height*width * 4];
 
 using namespace std;
 
@@ -46,6 +57,7 @@ float x;
 float y;
 float z;
 string datos = "";
+int py_message = STANDBY_CODE;
 
 int Connect2Kinect::Initialize()
 {
@@ -79,14 +91,21 @@ int Connect2Kinect::Initialize()
 	}
 
 	if (NULL != m_pNuiSensor) {
-		// Initialize the Kinect and use it for skeleton
-		hr = m_pNuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_SKELETON);
+		// Initialize the Kinect and use it for skeleton and RGB image
+		hr = m_pNuiSensor->NuiInitialize(NUI_INITIALIZE_FLAG_USES_SKELETON | NUI_INITIALIZE_FLAG_USES_COLOR);
 		if (SUCCEEDED(hr)) {
 			// Create an event that will be called each time there is data available
 			m_hNextSkeletonEvent = CreateEventW(NULL, TRUE, FALSE, NULL);
 
 			// Open a skeleton stream to receive skeleton data
 			hr = m_pNuiSensor->NuiSkeletonTrackingEnable(m_hNextSkeletonEvent, 0);
+			m_pNuiSensor->NuiImageStreamOpen(
+				NUI_IMAGE_TYPE_COLOR,            // Depth camera or rgb camera?
+				NUI_IMAGE_RESOLUTION_640x480,    // Image resolution
+				0,      // Image stream flags, e.g. near mode
+				2,      // Number of frames to buffer
+				NULL,   // Event handle
+				&rgbStream);
 		}
 	}
 
@@ -97,7 +116,7 @@ int Connect2Kinect::Initialize()
 	return 0;
 };
 
-void Connect2Kinect::Update(void)
+void Connect2Kinect::Update(int data_type)
 {
 	if (NULL == m_pNuiSensor)
 	{
@@ -107,7 +126,45 @@ void Connect2Kinect::Update(void)
 	// Access to ProcessData method
 	if (WAIT_OBJECT_0 == WaitForSingleObject(m_hNextSkeletonEvent, 0))
 	{
-		ProcessData();
+		if (data_type == JOINTS_CODE) {
+			ProcessData();
+		}
+		else{
+			getDataRGB(p_data);
+			ostringstream oss;
+			//string row = "";
+			//int dummy[3840];
+			for (int i = 0; i < height; ++i) {
+				for (int j = 0; j < width; j = j + 4) {
+					//dummy[j] = p_data[i*height + j];
+					//dummy[j + 1] = p_data[i*height + j + 1];
+					//dummy[j + 2] = p_data[i*height + j + 2];
+					if (j != width - 1) {
+						oss << p_data[i*height + j] << "," << p_data[i*height + j + 1] << "," << p_data[i*height + j + 2] << ",";
+					}
+					else {
+						oss << p_data[i*height + j] << "," << p_data[i*height + j + 1] << "," << p_data[i*height + j + 2] << ";";
+					}
+					datos = oss.str() + datos;
+				}
+				if (!datos.empty()) {
+					//cout << datos.size();
+					//fwrite(&datos, sizeof(string), datos.size(), stdout);
+					//fflush(stdout);
+					//datos = "";
+				}
+				
+				//cout << "compreme un coco";
+				//fwrite((const void*)&dummy, sizeof(int), 3840, stdout);
+				//fflush(stdout);
+			}
+			//cout << dummy[1] << " - ";
+			//printf("%i\n", dummy[1]);
+
+			// [¡] Send to python here [!]
+			cout << "compreme un coco";
+			
+		}
 	}
 }
 
@@ -126,7 +183,7 @@ void Connect2Kinect::ProcessData(void)
 	getData(&skeletonFrame);
 
 	string Saludo("Successful, we have data\n");
-	//cout << Saludo;
+	cout << Saludo;
 }
 
 void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
@@ -135,7 +192,7 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 		const NUI_SKELETON_DATA &skeleton = sframe->SkeletonData[i];
 
 		// Extract skeleton joints
-		for (int k = 0; k < 20; ++k) {
+		for (int k = 0; k < 20; ++k){
 			x = skeleton.SkeletonPositions[index_joint[k]].x;
 			y = skeleton.SkeletonPositions[index_joint[k]].y;
 			z = skeleton.SkeletonPositions[index_joint[k]].z;
@@ -154,23 +211,65 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 	}
 }
 
+int Connect2Kinect::getDataRGB(int *pdata){
+	NUI_IMAGE_FRAME imageFrame;
+	NUI_LOCKED_RECT LockedRect; // Pointer to the data
+	if (m_pNuiSensor->NuiImageStreamGetNextFrame(rgbStream, 0, &imageFrame) < 0) return 1;
+	INuiFrameTexture* texture = imageFrame.pFrameTexture;
+	texture->LockRect(0, &LockedRect, NULL, 0);
+	// Check if if not empty, if its not the save data into "data"
+	if (LockedRect.Pitch != 0)
+	{
+		 BYTE* curr = (BYTE*)LockedRect.pBits;
+		BYTE* dataEnd = curr + (width*height) * 4;
+
+		/*while (curr < dataEnd) {
+			*pdata = *curr;
+			pdata++;
+			curr++;
+		}*/
+		for (int i = 0; i < width*height * 4 - 1; ++i) {
+			pdata[i] = (int) *curr;
+			curr++;
+		}
+	}
+	texture->UnlockRect(0);
+	m_pNuiSensor->NuiImageStreamReleaseFrame(rgbStream, &imageFrame);
+	return 0;
+}
+
+
 int main() {
 	Connect2Kinect cc;
 	int ini = cc.Initialize();
 
 	if (ini == 1) {
-		string Fail1("No kinect found");
+		string Fail1("No se ha encontrado kinect");
 		cout << Fail1;
 	}
 	else if (ini == 2) {
-		string Fail("No ready Kinect found!");
+		string Fail("No se encuentra disponible Kinect");
 		cout << Fail;
 	}
 	else if (ini == 0) {
+		string Saludo("Conexion exitosa\n");
+		cout << Saludo;
+
 		while (1) {
-			cc.Update();
+			//cin >> py_message;
+			py_message = RGB_CODE;
+			if (py_message == STANDBY_CODE) {
+				// :v pos no hago nada
+			}
+			else if (py_message == JOINTS_CODE) {
+				cc.Update(JOINTS_CODE);
+			}
+			else if (py_message == RGB_CODE) {
+				cc.Update(RGB_CODE);
+			}
 		}
 	}
+
 	while (1);
 	return 0;
 }
