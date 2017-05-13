@@ -15,5 +15,5 @@ public:
 	void Update(int);
 	void ProcessData(void);
 	void getData(NUI_SKELETON_FRAME* pf);
-	int getDataRGB(int* pdata);
+	int getDataRGB(char* pdata);
 };

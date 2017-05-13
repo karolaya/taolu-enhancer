@@ -23,8 +23,9 @@
 #define RGB_CODE 2
 
 HANDLE rgbStream;
+const unsigned int N = height*width * 3 * 2;
 BYTE dataRGB [width*height*4];
-int p_data[height*width * 4];
+char p_data[width*height*4];
 
 using namespace std;
 
@@ -58,6 +59,7 @@ float y;
 float z;
 string datos = "";
 int py_message = STANDBY_CODE;
+int counter = 0;
 
 int Connect2Kinect::Initialize()
 {
@@ -132,21 +134,29 @@ void Connect2Kinect::Update(int data_type)
 		else{
 			getDataRGB(p_data);
 
-			//string row = "";
-			int dummy[3840];
-			for (int i = 0; i < height; ++i) {
-				for (int j = 0; j < width; j = j + 4) {
-					dummy[j] = p_data[i*height + j];
-					dummy[j + 1] = p_data[i*height + j + 1];
-					dummy[j + 2] = p_data[i*height + j + 2];
+			if (counter == 0) {
+				char dummy[3 * width];
+
+				// Pointer to the first element of array
+				char * ini_ptr = &dummy[0];
+
+				// Expand array
+				int j;
+				for (int i = 0; i < height; ++i) {
+					j = 0;
+					for (int k = 0; k < width * 4; k = k + 4) {
+						// r,g,b,a,r,g,b,a,...
+						dummy[j] = p_data[i*height + k];
+						dummy[j + 1] = p_data[i*height + k + 1];
+						dummy[j + 2] = p_data[i*height + k + 2];
+						j = j + 3;
+					}
+					fwrite(ini_ptr, sizeof(char), 3 * width, stdout);
+					fflush(stdout);
+					cout << endl;
 				}
-
-				fwrite((const void*)&dummy, sizeof(int), 3840, stdout);
-				fflush(stdout);
+				++counter;
 			}
-			//cout << dummy[1] << " - ";
-			//printf("%i\n", dummy[1]);
-
 			// [¡] Send to python here [!]
 		}
 	}
@@ -195,7 +205,7 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 	}
 }
 
-int Connect2Kinect::getDataRGB(int *pdata){
+int Connect2Kinect::getDataRGB(char *pdata){
 	NUI_IMAGE_FRAME imageFrame;
 	NUI_LOCKED_RECT LockedRect; // Pointer to the data
 	if (m_pNuiSensor->NuiImageStreamGetNextFrame(rgbStream, 0, &imageFrame) < 0) return 1;
@@ -207,14 +217,14 @@ int Connect2Kinect::getDataRGB(int *pdata){
 		 BYTE* curr = (BYTE*)LockedRect.pBits;
 		BYTE* dataEnd = curr + (width*height) * 4;
 
-		/*while (curr < dataEnd) {
-			*pdata = *curr;
-			pdata++;
-			curr++;
-		}*/
-		for (int i = 0; i < width*height * 4 - 1; ++i) {
-			pdata[i] = (int) *curr;
-			curr++;
+		for (int i = 0; i < width*height*4; ++i) {
+			if (((int)*curr) > 216 && ((int)*curr) < 222) {
+				pdata[i] = '0' + 255;
+			}
+			else {
+				pdata[i] = '0' + (((int)*curr));
+			}
+			++curr;
 		}
 	}
 	texture->UnlockRect(0);
@@ -240,8 +250,8 @@ int main() {
 		cout << Saludo;
 
 		while (1) {
-			cin >> py_message;
-
+			//cin >> py_message;
+			py_message = RGB_CODE;
 			if (py_message == STANDBY_CODE) {
 				// :v pos no hago nada
 			}
