@@ -34,3 +34,24 @@ class Projections:
     ANGLE_ARM_HIPLINE_L = 11
     ANGLE_THIGH_HIPLINE_R = 12
     ANGLE_THIGH_HIPLINE_L = 13
+
+class moves:
+    prep = "Preparation"
+    form1 = "Arhat workships Budha"
+    form2 = "Separate palm horse"
+    form3 = "Strike the heart with fist"
+    form4 = "Arhat restrains tiger"
+    form5 = "Arhat holds seat"
+    form6 = "Brush hand and thrust fist in bow stance"
+    form7 = "Snap kick and thrust fist"
+    form8 = "Thrust fist in bow stance"
+    form9 = "Twist body and thrust fist in rest stance"
+    form10 = "Parry and punch in horse stance"
+    form11 = "Trowel eyebrow and kick with heel"
+    form12 = "Step back and push palm twice"
+    form13 = "Insert first down in T-stance"
+    form14 = "Tiger-tail foot"
+    form15 = "Chop and kick"
+    form16 = "Arhat sleep"
+
+    

@@ -1,2 +1,6 @@
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.14393.0
+<<<<<<< HEAD
 Debug|Win32|C:\Users\user\Documents\Git\taolu-enhancer\taolu-enhancer\|
+=======
+Debug|Win32|C:\Users\academic\taolu-enhancer\taolu-enhancer\|
+>>>>>>> 3b6cbb023675512923dc02c9482f307f0577e524

@@ -1,5 +1,10 @@
 ﻿  Joints.cpp
+<<<<<<< HEAD
 c:\users\user\documents\git\taolu-enhancer\taolu-enhancer\serial\joints.cpp(222): warning C4305: '=': truncamiento de 'int' a 'char'
 c:\users\user\documents\git\taolu-enhancer\taolu-enhancer\serial\joints.cpp(222): warning C4309: '=': truncamiento de valor constante
   serial.vcxproj -> C:\Users\user\Documents\Git\taolu-enhancer\taolu-enhancer\Debug\serial.exe
   serial.vcxproj -> C:\Users\user\Documents\Git\taolu-enhancer\taolu-enhancer\Debug\serial.pdb (Partial PDB)
+=======
+  serial.vcxproj -> C:\Users\academic\taolu-enhancer\taolu-enhancer\Debug\serial.exe
+  serial.vcxproj -> C:\Users\academic\taolu-enhancer\taolu-enhancer\Debug\serial.pdb (Partial PDB)
+>>>>>>> 3b6cbb023675512923dc02c9482f307f0577e524
