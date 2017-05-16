@@ -18,11 +18,12 @@ state = "run"
 i = 1
 cppMessage = ''
 mplt.figure()
-
+AR = list()
+AG = list()
+AB = list()
+a = mplt.axes()
 while 1:
-    AR = list()
-    AG = list()
-    AB = list()  
+ 
     line = proc.stdout.readline()
     line = line.strip()
     if len(line) == 1920:
@@ -31,14 +32,17 @@ while 1:
         AG.append(numeric[1::3])
         AB.append(numeric[2::3])
         i = i + 1
-        print(i)
         if (i == 480):
                 #mplt.figure()
                 AR = np.array(AR,dtype = np.uint8)
                 AB = np.array(AB,dtype = np.uint8)
                 AG = np.array(AG,dtype = np.uint8)
                 A = cv2.merge((AR,AB,AG))
-                mplt.imshow(A)
-                cv2.waitKey(0)
+                a.imshow(A)
+                mplt.show()
+                a.cla()
                 A = []
+                AR = list()
+                AG = list()
+                AB = list()
                 i = 0 
