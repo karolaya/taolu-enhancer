@@ -133,8 +133,6 @@ void Connect2Kinect::Update(int data_type)
 		}
 		else{
 			getDataRGB(p_data);
-
-			if (counter == 0) {
 				char dummy[3 * width];
 
 				// Pointer to the first element of array
@@ -146,17 +144,15 @@ void Connect2Kinect::Update(int data_type)
 					j = 0;
 					for (int k = 0; k < width * 4; k = k + 4) {
 						// r,g,b,a,r,g,b,a,...
-						dummy[j] = p_data[i*height + k];
-						dummy[j + 1] = p_data[i*height + k + 1];
-						dummy[j + 2] = p_data[i*height + k + 2];
+						dummy[j] = p_data[4*i*width + k];
+						dummy[j + 1] = p_data[4*i*width + k + 1];
+						dummy[j + 2] = p_data[4*i*width + k + 2];
 						j = j + 3;
 					}
 					fwrite(ini_ptr, sizeof(char), 3 * width, stdout);
 					fflush(stdout);
 					cout << endl;
 				}
-				++counter;
-			}
 			// [¡] Send to python here [!]
 		}
 	}
