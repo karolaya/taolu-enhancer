@@ -2,7 +2,7 @@ import subprocess
 import cv2
 import numpy as np
 import matplotlib.pyplot as mplt
-
+import time
 def guessVal(i):
     if i - 48 < 0:
         if i - 48 == -1:
@@ -15,34 +15,22 @@ stdin=subprocess.PIPE,
 stdout=subprocess.PIPE)
 
 state = "run"
-i = 1
+i = 0
 cppMessage = ''
 mplt.figure()
-AR = list()
-AG = list()
-AB = list()
-a = mplt.axes()
+
 while 1:
- 
     line = proc.stdout.readline()
     line = line.strip()
-    if len(line) == 1920:
-        numeric = [guessVal(line[i]) for i in range(len(line))]
-        AR.append(numeric[0::3])
-        AG.append(numeric[1::3])
-        AB.append(numeric[2::3])
-        i = i + 1
-        if (i == 480):
-                #mplt.figure()
-                AR = np.array(AR,dtype = np.uint8)
-                AB = np.array(AB,dtype = np.uint8)
-                AG = np.array(AG,dtype = np.uint8)
-                A = cv2.merge((AR,AB,AG))
-                a.imshow(A)
-                mplt.show()
-                a.cla()
-                A = []
-                AR = list()
-                AG = list()
-                AB = list()
-                i = 0 
+    if len(line) == 921600:
+        mv = memoryview(line)
+        numeric = np.asarray(mv)-48
+        AR = numeric[0::3].reshape((480,640))
+        AG = numeric[1::3].reshape((480,640))
+        AB = numeric[2::3].reshape((480,640))
+        
+        A = cv2.merge((AR,AG,AB))
+        cv2.imshow('video',A)
+        cv2.waitKey(15) 
+        #print(numeric)
+                                
