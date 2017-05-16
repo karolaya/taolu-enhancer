@@ -31,6 +31,5 @@ while 1:
         
         A = cv2.merge((AR,AG,AB))
         cv2.imshow('video',A)
-        cv2.waitKey(15) 
+        cv2.waitKey(15)
         #print(numeric)
-                                
