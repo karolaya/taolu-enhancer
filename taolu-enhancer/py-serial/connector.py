@@ -16,13 +16,13 @@ class Writer:
     def setDefaultConnectionType(self, conn_type):
         self.def_type = conn_type
 
-    def issueTimedCommand(self, conn_type, interval):
+    def issueTimedCommand(self, conn_type, interval=-1):
         self.proc.stdin.write(str(conn_type))
         t = Thread(None, target=self.waitElapsed, args=(time.time(), interval))
         t.start()
 
     def waitElapsed(self, init_time, interval):
-        while time.time() - init_time < interval:
+        while time.time() - init_time < interval or interval == -1:
             pass
         self.proc.stdin.write(str(self.def_type))
 

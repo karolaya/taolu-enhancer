@@ -2,13 +2,6 @@ import subprocess
 import cv2
 import numpy as np
 import matplotlib.pyplot as mplt
-import time
-def guessVal(i):
-    if i - 48 < 0:
-        if i - 48 == -1:
-            return 219
-        return i + 208
-    return i - 48
 
 proc = subprocess.Popen("C:\\Users\\Public\\serial.exe",
 stdin=subprocess.PIPE,
