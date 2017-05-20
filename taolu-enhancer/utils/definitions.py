@@ -35,23 +35,47 @@ class Projections:
     ANGLE_THIGH_HIPLINE_R = 12
     ANGLE_THIGH_HIPLINE_L = 13
 
-class moves:
-    prep = "Preparation"
-    form1 = "Arhat workships Budha"
-    form2 = "Separate palm horse"
-    form3 = "Strike the heart with fist"
-    form4 = "Arhat restrains tiger"
-    form5 = "Arhat holds seat"
-    form6 = "Brush hand and thrust fist in bow stance"
-    form7 = "Snap kick and thrust fist"
-    form8 = "Thrust fist in bow stance"
-    form9 = "Twist body and thrust fist in rest stance"
-    form10 = "Parry and punch in horse stance"
-    form11 = "Trowel eyebrow and kick with heel"
-    form12 = "Step back and push palm twice"
-    form13 = "Insert first down in T-stance"
-    form14 = "Tiger-tail foot"
-    form15 = "Chop and kick"
-    form16 = "Arhat sleep"
+class Form:
+    forms ={"lohan quan p1" : {"m0" : "Preparation",
+                    "m1" : "Arhat workships Budha",
+                    "m2" : "Separate palm horse",
+                    "m3" : "Strike the heart with fist",
+                    "m4" : "Arhat restrains tiger",
+                    "m5" : "Arhat holds seat",
+                    "m6" : "Brush hand and thrust fist in bow stance",
+                    "m7" : "Snap kick and thrust fist",
+                    "m8" : "Thrust fist in bow stance",
+                    "m9" : "Twist body and thrust fist in rest stance",
+                    "m10" : "Parry and punch in horse stance",
+                    "m11" : "Trowel eyebrow and kick with heel",
+                    "m12" : "Step back and push palm twice",
+                    "m13" : "Insert first down in T-stance",
+                    "m14" : "Tiger-tail foot",
+                    "m15" : "Chop and kick",
+                    "m16" : "Arhat sleep"},
+            "form2":{"m0":"preparation",
+                    "m1":"movimiento1"}
+
+            }
+    abbreviations = {"lohan quan p1" : {"m0" : "P",
+                                "m1" : "AWB",
+                                "m2" : "SPH",
+                                "m3" : "STHWF",
+                                "m4" : "ART",
+                                "m5" : "AHS",
+                                "m6" : "BHATFIBS",
+                                "m7" : "SKATF",
+                                "m8" : "TFIBS",
+                                "m9" : "TBATFIRS",
+                                "m10" : "PAPIHS",
+                                "m11" : "TEAKWH",
+                                "m12" : "SBAPPT",
+                                "m13" : "IFDIT",
+                                "m14" : "TF",
+                                "m15" : "CAK",
+                                "m16" : "AS"},
+                    "form2":{"m0":"preparation",
+                            "m1":"move1"}
+    }
 
     
