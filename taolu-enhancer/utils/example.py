@@ -22,7 +22,7 @@ while 1:
         AG = numeric[1::3].reshape((480,640))
         AB = numeric[2::3].reshape((480,640))
         
-        A = cv2.merge((AR,AG,AB))
+        A = np.dstack([AR, AG, AB])
         cv2.imshow('video',A)
         cv2.waitKey(15)
         #print(numeric)
