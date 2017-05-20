@@ -1,13 +1,17 @@
-cmm = "x,y,z;x1,y1,z1;x2,y2,z2;x3,y3,z3;"
+class sDB(object):
+	"""docstring for sDB"""
+	def __init__(self, arg):
+		super(sDB, self).__init__()
+		self.arg = arg
+		
+	def jointsLst(cmm):
+	    cmm_s = cmm.split(";")
+	    del cmm_s[-1]
 
-def Joints_lst(cmm):
-    cmm_s = cmm.split(";")
-    del cmm_s[-1]
+	    lst = ["form"]
+	    i = 0
 
-    lst = ["form"]
-    i = 0
+	    for i in range(len(cmm_s)):
+	        lst.append(cmm_s[i])
 
-    for i in range(len(cmm_s)):
-        lst.append(cmm_s[i])
-
-    return(lst)
+	    return(lst)

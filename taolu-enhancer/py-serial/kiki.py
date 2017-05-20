@@ -1,7 +1,7 @@
 from connector import Writer, Reader
 
-koko = Writer("C:\\Users\\user\\Documents\\Git\\taolu-enhancer\\taolu-enhancer\\Debug\\serial.exe")
-koko.issueTimedCommand(1, 10)
+c2p = Reader("C:\\Users\\user\\Documents\\Git\\taolu-enhancer\\taolu-enhancer\\Debug\\serial.exe", 1)
+c2p.startReading()
 
-kok = Reader(koko.getProcess())
-kok.startReading()
+p2c = Writer(c2p.getProcess())
+p2c.issueTimedCommand(c2p, 2)
