@@ -21,8 +21,10 @@ class Writer:
         # Wait for connection to stablish
         while reader.conn_flag == 0:
             pass
-        print('Connection stablished')
-        self.proc.stdin.write(bytes(str(conn_type) + '\n','ASCII'))
+        print('\nConnection stablished')
+        #print((str(conn_type) + '\n').encode('ascii'))
+        self.proc.stdin.write(bytes(str(conn_type) + '\n', 'ascii'))
+        self.proc.stdin.flush()
         t = Thread(None, target = self.waitElapsed, args = (time.time(), interval, reader))
         t.start()
 
@@ -31,7 +33,8 @@ class Writer:
             pass
         print('Finished sending')
         reader.sw = False
-        self.proc.stdin.write(bytes(str(self.def_type) + '\n','ASCII'))
+        self.proc.stdin.write(bytes(str(self.def_type) + '\n', 'ascii'))
+        self.proc.stdin.flush()
 
 class Reader:
     def __init__(self, pipe, conn_type):
@@ -50,14 +53,13 @@ class Reader:
 
     def readDataInBuffer(self, conn_type):
         while(self.sw):
-            print('Reading')
-            mess = self.proc.stdout.readline().strip(b"\n")
+            #print('Reading')
+            mess = self.proc.stdout.readline().decode('utf-8').strip('\n')
             if self.conn_flag == 0:
                 self.conn_flag = 1
             if mess is not '' and conn_type == 1:
                 self.lst_cpp.append(mess)
-        if conn_type == 1:
-            print(self.lst_cpp[1])
+        if conn_type == 1 and len(self.lst_cpp) > 1:
             self.jointsLst(self.lst_cpp[1:])
 
     def jointsLst(self, cmm):
