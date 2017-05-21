@@ -21,6 +21,7 @@
 #define STANDBY_CODE 0
 #define JOINTS_CODE 1
 #define RGB_CODE 2
+#define MAX_THREADS 2
 
 HANDLE rgbStream;
 const unsigned int N = height*width * 3 * 2;
@@ -60,6 +61,10 @@ float z;
 string datos = "";
 int py_message = STANDBY_CODE;
 int counter = 0;
+
+typedef struct IOPacket {
+	int py_input;
+} packet, *Packet;
 
 int Connect2Kinect::Initialize()
 {
@@ -172,16 +177,18 @@ void Connect2Kinect::ProcessData(void)
 
 	getData(&skeletonFrame);
 
-	string Saludo("Successful, we have data\n");
-	cout << Saludo;
+	//string Saludo("Successful, we have data\n");
+	//cout << Saludo;
 }
 
 void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 {
+	int drop_frame;
 	for (int i = 0; i < NUI_SKELETON_COUNT; ++i) {
 		const NUI_SKELETON_DATA &skeleton = sframe->SkeletonData[i];
 
 		// Extract skeleton joints
+		drop_frame = 0;
 		for (int k = 0; k < 20; ++k) {
 			x = skeleton.SkeletonPositions[index_joint[k]].x;
 			y = skeleton.SkeletonPositions[index_joint[k]].y;
@@ -192,9 +199,13 @@ void Connect2Kinect::getData(NUI_SKELETON_FRAME* sframe)
 				oss << x << "," << y << "," << z << ";";
 				datos = oss.str() + datos;
 			}
+			else {
+				drop_frame = 1;
+				break;
+			}
 		}
 		//printf(datos);
-		if (!datos.empty()) {
+		if (drop_frame == 0 && !datos.empty()) {
 			cout << datos << "\n";
 		}
 		datos = "";
@@ -229,6 +240,36 @@ int Connect2Kinect::getDataRGB(char *pdata){
 }
 
 
+DWORD WINAPI readPythonInput(LPVOID lpParam) {
+	while (1) {
+		if (!feof(stdin)) {
+			cin >> py_message;
+		}
+	}
+	
+	return 0;
+}
+
+void createReadingThread() {
+	Packet p_data;
+	DWORD thread_id;
+	HANDLE h_thread;
+	
+	p_data = (Packet) HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(Packet));
+
+	if (p_data == NULL) {
+			ExitProcess(2);
+	}
+
+	p_data->py_input = STANDBY_CODE;
+	h_thread = CreateThread(NULL, 0, readPythonInput, p_data, 0, &thread_id);
+
+	if (h_thread == NULL) {
+		ExitProcess(3);
+	}
+}
+
+
 int main() {
 	Connect2Kinect cc;
 	int ini = cc.Initialize();
@@ -245,9 +286,9 @@ int main() {
 		string Saludo("Conexion exitosa\n");
 		cout << Saludo;
 
+		createReadingThread();
+
 		while (1) {
-			//cin >> py_message;
-			py_message = RGB_CODE;
 			if (py_message == STANDBY_CODE) {
 				// :v pos no hago nada
 			}

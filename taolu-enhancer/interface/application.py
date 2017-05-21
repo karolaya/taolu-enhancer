@@ -9,7 +9,7 @@ class Application(tk.Frame):
 		super().__init__(master, width = 992, height = 502, bg='white')
 		self.width = 992
 		self.height = 502
-		self.lock = 1
+		self.lock = 0
 		self.selected_form = tk.StringVar()
 		self.last_selected_form = "None"
 		self.selected_move = tk.StringVar()
@@ -34,7 +34,7 @@ class Application(tk.Frame):
 
 
 	def trainingMode(self):
-		if self.lock == 1:
+		if self.lock == 1 or self.lock == 0:
 			# left panel
 			self._form_move_frame = tk.Frame(master = self, width=self.width//3.08, height=self.height//1.048, bg='#F0F0F0', colormap="new")
 			self._form_move_frame.place(x = self.width//99.2, y = self.height//50.2)
@@ -66,9 +66,13 @@ class Application(tk.Frame):
 			self._move_scrollbar.config(command=self._move_listbox.yview)
 
 			#Save button
-			self._save_button = tk.Button(self._form_move_frame,text = "Save", command = self.save)
+			self._save_button = tk.Button(self._form_move_frame,text = "Start", command = self.startToSaveData)
 			self._save_button.place(x = self.width//99.2*13, y = self.height//50.2*30)
+			if self.lock == 1:
+				self._form_identified_label.destroy()
+				self._form_identified_label_show.destroy()
 			self.lock = 2
+
 
 	def testMode(self):
 		if self.lock == 2:
@@ -100,7 +104,7 @@ class Application(tk.Frame):
 		self._menubar.add_command(label='Exit', command=self.root.quit)
 		self.root.config(menu=self._menubar)
 
-	def save(self):
+	def startToSaveData(self):
 		self.selected_form = self._form_listbox.get(tk.ACTIVE)
 		self.selected_move = self._move_listbox.get(tk.ACTIVE)
 		print(self.selected_form)
@@ -113,8 +117,6 @@ class Application(tk.Frame):
 		self._video_holder.imgtk = self.photo
 		self._video_holder.config(image = self.photo)
 		self._video_holder.pack()
-		#if self.selected_form != "":
-		#	self.setMoves()
 
 	def loadVideoHolderTestWindow(self):
 		self._video_holder.imgtk = self.photo

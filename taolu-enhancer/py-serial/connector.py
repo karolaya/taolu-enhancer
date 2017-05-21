@@ -1,5 +1,6 @@
 import time
 import subprocess
+import listaDB as klist
 from threading import Thread
 
 class Writer:
@@ -15,47 +16,55 @@ class Writer:
         self.def_type = conn_type
 
     def issueTimedCommand(self, reader, interval):
-        self.proc.stdin.write(str(conn_type))
+        conn_type = reader.getConnType()
+        
+        # Wait for connection to stablish
+        while reader.conn_flag == 0:
+            pass
+        print('Connection stablished')
+        self.proc.stdin.write(str(conn_type) + '\n')
         t = Thread(None, target = self.waitElapsed, args = (time.time(), interval, reader))
         t.start()
 
     def waitElapsed(self, init_time, interval, reader):
         while time.time() - init_time < interval:
-            print('Holo')
-        reader.sw = True
-        self.proc.stdin.write(str(self.def_type))
+            pass
+        print('Finished sending')
+        reader.sw = False
+        self.proc.stdin.write(str(self.def_type) + '\n')
 
 class Reader:
     def __init__(self, pipe, conn_type):
         self.sw = False
         self.conn = conn_type
-        self.lst = ["form"]
+        self.lst_cpp = []
+        self.conn_flag = 0
         self.proc = subprocess.Popen(pipe,
             stdin = subprocess.PIPE,
             stdout = subprocess.PIPE)
 
     def startReading(self):
         self.sw = True
-        t = Thread(None, target = self.readDataInBuffer, args = (self.conn))
+        t = Thread(None, target = self.readDataInBuffer, args = (self.conn,))
         t.start()
 
     def readDataInBuffer(self, conn_type):
         while(self.sw):
+            print('Reading')
             mess = self.proc.stdout.readline().rstrip("\n")
-            if mess is not "" and conn_type == 1:
-                #self.lst.append(cmm_s[i])
-            else:
-                print(mess)
+            if self.conn_flag == 0:
+                self.conn_flag = 1
+            if mess is not '' and conn_type == 1:
+                self.lst_cpp.append(mess)
         if conn_type == 1:
-            Joints_lst(mess)
+            print(self.lst_cpp[1])
+            self.jointsLst(self.lst_cpp[1:])
 
-    def jointsLst(cmm):
-        cmm_s = cmm.split(";")
-        del cmm_s[-1]
-        i = 0
-
-        for i in range(len(cmm_s)):
-            self.lst.append(cmm_s[i])
+    def jointsLst(self, cmm):
+        klist.listaDB(self.lst_cpp)
 
     def getProcess(self):
         return self.proc
+
+    def getConnType(self):
+        return self.conn
