@@ -12,4 +12,4 @@ def listaDB(cmm):
         lst.append("form")
     del lst[-1]
     for j in range(0, len(lst), lst[1:].index('form') + 1):
-        print lst[j:j + lst[1:].index('form') + 1]
+        print(lst[j:j + lst[1:].index('form') + 1])

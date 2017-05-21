@@ -22,7 +22,7 @@ class Writer:
         while reader.conn_flag == 0:
             pass
         print('Connection stablished')
-        self.proc.stdin.write(str(conn_type) + '\n')
+        self.proc.stdin.write(bytes(str(conn_type) + '\n','ASCII'))
         t = Thread(None, target = self.waitElapsed, args = (time.time(), interval, reader))
         t.start()
 
@@ -31,7 +31,7 @@ class Writer:
             pass
         print('Finished sending')
         reader.sw = False
-        self.proc.stdin.write(str(self.def_type) + '\n')
+        self.proc.stdin.write(bytes(str(self.def_type) + '\n','ASCII'))
 
 class Reader:
     def __init__(self, pipe, conn_type):
@@ -51,7 +51,7 @@ class Reader:
     def readDataInBuffer(self, conn_type):
         while(self.sw):
             print('Reading')
-            mess = self.proc.stdout.readline().rstrip("\n")
+            mess = self.proc.stdout.readline().strip(b"\n")
             if self.conn_flag == 0:
                 self.conn_flag = 1
             if mess is not '' and conn_type == 1:
