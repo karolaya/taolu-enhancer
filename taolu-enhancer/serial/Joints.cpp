@@ -173,7 +173,7 @@ void Connect2Kinect::ProcessData(void)
 	}
 
 	// Smooth the obtained skeleton data
-	m_pNuiSensor->NuiTransformSmooth(&skeletonFrame, NULL);
+	m_pNuiSensor->NuiTransformSmooth(&skeletonFrame, NULL);	
 
 	getData(&skeletonFrame);
 

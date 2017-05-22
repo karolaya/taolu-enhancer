@@ -7,7 +7,8 @@ import numpy as np
 import matplotlib.pyplot as mplt
 from threading import Thread
 from interface.application import Application as App
-"""
+
+'''
 proc = subprocess.Popen("C:\\Users\\Public\\serial.exe",
 stdin=subprocess.PIPE,
 stdout=subprocess.PIPE)
@@ -18,6 +19,7 @@ i = 0
 while 1:
 	line = proc.stdout.readline()
 	line = line.strip()
+	print(line)
 	if len(line) == 921600:
 		mv = memoryview(line)
 		numeric = np.asarray(mv)-48
@@ -32,8 +34,8 @@ while 1:
 		#print(numeric)
 		#i +=1
 		app.update()
-		app.update_idletasks()
-"""
+		app.update_idletasks()'''
+
 app = App()
 img = cv2.imread("shinobu.jpg",1)
 while 1:

@@ -2,7 +2,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import time
 from utils.definitions import Form
-
+from pyserial.connector import Writer, Reader
 
 class Application(tk.Frame):
 	def __init__(self, master=tk.Tk()):
@@ -93,8 +93,8 @@ class Application(tk.Frame):
 		self.selected_form = self._form_listbox.get(tk.ACTIVE)
 		if self.selected_form != self.last_selected_form:
 			self._move_listbox.delete(0,tk.END)
-			for moves in Form.forms[self.selected_form].values():
-				self._move_listbox.insert(tk.END,moves)
+			for m in Form.forms[self.selected_form].keys():
+				self._move_listbox.insert(tk.END,Form.forms[self.selected_form][m])
 			self._move_listbox.place(x = self.width//99.2, y = self.height//50.2*20)
 			self.last_selected_form = self.selected_form
 
@@ -105,10 +105,19 @@ class Application(tk.Frame):
 		self.root.config(menu=self._menubar)
 
 	def startToSaveData(self):
-		self.selected_form = self._form_listbox.get(tk.ACTIVE)
 		self.selected_move = self._move_listbox.get(tk.ACTIVE)
-		print(self.selected_form)
-		print(self.selected_move)
+
+		val = ''
+		for name, value in Form.forms[self.selected_form].items():
+		    if value == self.selected_move:
+		        val = name
+
+		print(Form.abbreviations[self.selected_form][val])
+		c2p = Reader("C:\\Users\\academic\\taolu-enhancer\\taolu-enhancer\\Debug\\serial.exe", 1, Form.abbreviations[self.selected_form][val]) # (pipe, conn_type)
+		c2p.startReading()
+
+		p2c = Writer(c2p.getProcess())
+		p2c.issueTimedCommand(c2p, 10) # (reader, interval)
 
 	# LoadVideoHolder receives a numpy array as a parameter
 	def loadVideoHolder(self, img):
