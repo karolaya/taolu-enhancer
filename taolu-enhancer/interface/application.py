@@ -113,11 +113,10 @@ class Application(tk.Frame):
 
 	def startToSaveData(self):
 		self.selected_move = self._move_listbox.get(tk.ACTIVE)
-
 		val = ''
 		for name, value in Form.forms[self.selected_form].items():
-		    if value == self.selected_move:
-		        val = name
+			if value == self.selected_move:
+				val = name
 
 		print(Form.abbreviations[self.selected_form][val])
 		self.c2p = Reader(1,self.proc, Form.abbreviations[self.selected_form][val]) # (pipe, conn_type)
@@ -132,8 +131,14 @@ class Application(tk.Frame):
 	def checkPendingOperations(self):
 		if self.operation_pending:
 			if self.c2p.move:
+				val = ''
+				for name, value in Form.abbreviations.items():
+					for n,v in value.items():
+						if v == self.c2p.move or v == [self.c2p.move]:
+							val = Form.forms[name][n]
+							break
 				print(self.c2p.move)
-				self._form_identified_label_show.config(text=self.c2p.move)
+				self._form_identified_label_show.config(text=val)
 				self.operation_pending = False
 
 	# LoadVideoHolder receives a numpy array as a parameter

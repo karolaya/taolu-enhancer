@@ -37,7 +37,6 @@ def saveJointsDB(data):
                 ANKLE_RIGHT TEXT NOT NULL,
                 FOOT_RIGHT TEXT NOT NULL)
                 ''')
-    print(data)
     c.execute('''INSERT INTO joints VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', data)
     conn.commit()
     conn.close()
@@ -71,6 +70,7 @@ def saveAnglesDB(move):
                 'HIP_LEFT,KNEE_LEFT,ANKLE_LEFT,FOOT_LEFT,HIP_RIGHT,'
                 'KNEE_RIGHT,ANKLE_RIGHT,FOOT_RIGHT '
                 'FROM joints WHERE move = "'+move+'"')
+
     jointslist = c.fetchall()
     angleslist = obtainAngles(jointslist, move)
     c.executemany('''INSERT INTO angles VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''', angleslist)

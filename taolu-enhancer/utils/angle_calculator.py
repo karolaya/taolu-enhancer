@@ -5,17 +5,16 @@ from utils.definitions import Projections,Joints
 import sqlite3
 
 def obtainAngles(jointslist, move):
-    angles = ["",0,0,0,0,0,0,0,0,0,0,0,0,0]
     angleslist = []
     for i in range(len(jointslist)):
+        angles = ["",0,0,0,0,0,0,0,0,0,0,0,0,0]
         angles[0] = move
-
         # Neck-Head Angle:
         J3 = [float(i) for i in jointslist[i][Joints.NUI_SKELETON_POSITION_SPINE].split(',')]
         J2 = [float(i) for i in jointslist[i][Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER].split(',')]
         J1 = [float(i) for i in jointslist[i][Joints.NUI_SKELETON_POSITION_HEAD].split(',')]
+        
         angles[Projections.ANGLE_NECK_TORSO] = calculateAngleProjection(Joint(x=J1[0], y=J1[1],z=J1[2]),Joint(x=J2[0], y=J2[1],z=J2[2]),Joint(x=J3[0], y=J3[1],z=J3[2]))
-
         # Neck-Elbow-Right Angle:
         J1 = [float(i) for i in jointslist[i][Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER].split(',')]
         J2 = [float(i) for i in jointslist[i][Joints.NUI_SKELETON_POSITION_SHOULDER_RIGHT].split(',')]
@@ -89,6 +88,7 @@ def obtainAngles(jointslist, move):
         angles[Projections.ANGLE_THIGH_HIPLINE_L] = calculateAngleProjection(Joint(x=J1[0], y=J1[1],z=J1[2]),Joint(x=J2[0], y=J2[1],z=J2[2]),Joint(x=J3[0], y=J3[1],z=J3[2]))
         angleslist.append(angles)
 
+    #print(angleslist)
     return angleslist
 
 def calculateAngleProjection(inferior, central, superior):
