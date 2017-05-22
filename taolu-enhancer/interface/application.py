@@ -2,14 +2,16 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import time
 from utils.definitions import Form
-from pyserial.connector import Writer, Reader
+from pyserial.connector import Reader
 
 class Application(tk.Frame):
-	def __init__(self, master=tk.Tk()):
+	def __init__(self, proc, master=tk.Tk()):
 		super().__init__(master, width = 992, height = 502, bg='white')
+		self.proc = proc
 		self.width = 992
 		self.height = 502
 		self.lock = 0
+		self.operation_pending = False
 		self.selected_form = tk.StringVar()
 		self.last_selected_form = "None"
 		self.selected_move = tk.StringVar()
@@ -71,6 +73,7 @@ class Application(tk.Frame):
 			if self.lock == 1:
 				self._form_identified_label.destroy()
 				self._form_identified_label_show.destroy()
+				self._identify_move_button.destroy()
 			self.lock = 2
 
 
@@ -87,7 +90,11 @@ class Application(tk.Frame):
 			self._form_identified_label.place(x = self.width//99.2, y = self.height//50.2)
 			self._form_identified_label_show = tk.Label(self._form_move_frame, text = self.identified_move,bg='#E0E0E0')
 			self._form_identified_label_show.place(x = self.width//99.2, y = self.height//50.2*4)
+			self._identify_move_button = tk.Button(self._form_move_frame,text = "Identify Move", command = self.identifyMove)
+			self._identify_move_button.place(x = self.width//99.2*13, y = self.height//50.2*8)
 			self.lock = 1
+
+
 
 	def setMoves(self,evt):
 		self.selected_form = self._form_listbox.get(tk.ACTIVE)
@@ -113,11 +120,21 @@ class Application(tk.Frame):
 		        val = name
 
 		print(Form.abbreviations[self.selected_form][val])
-		c2p = Reader("C:\\Users\\academic\\taolu-enhancer\\taolu-enhancer\\Debug\\serial.exe", 1, Form.abbreviations[self.selected_form][val]) # (pipe, conn_type)
-		c2p.startReading()
+		self.c2p = Reader(1,self.proc, Form.abbreviations[self.selected_form][val]) # (pipe, conn_type)
+		self.c2p.startReading(10)
 
-		p2c = Writer(c2p.getProcess())
-		p2c.issueTimedCommand(c2p, 10) # (reader, interval)
+	def identifyMove(self):
+		self.c2p = Reader(2,self.proc) # (conn_type, proc)
+		self.c2p.startReading(10)
+
+		self.operation_pending = True
+
+	def checkPendingOperations(self):
+		if self.operation_pending:
+			if self.c2p.move:
+				print(self.c2p.move)
+				self._form_identified_label_show.config(text=self.c2p.move)
+				self.operation_pending = False
 
 	# LoadVideoHolder receives a numpy array as a parameter
 	def loadVideoHolder(self, img):

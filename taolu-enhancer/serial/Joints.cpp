@@ -59,7 +59,7 @@ float x;
 float y;
 float z;
 string datos = "";
-int py_message = STANDBY_CODE;
+int py_message = RGB_CODE;
 int counter = 0;
 
 typedef struct IOPacket {
@@ -286,8 +286,6 @@ int main() {
 		string Saludo("Conexion exitosa\n");
 		cout << Saludo;
 
-		createReadingThread();
-
 		while (1) {
 			if (py_message == STANDBY_CODE) {
 				// :v pos no hago nada
@@ -298,6 +296,8 @@ int main() {
 			else if (py_message == RGB_CODE) {
 				cc.Update(RGB_CODE);
 			}
+			if (py_message == JOINTS_CODE) { py_message = RGB_CODE;}
+			else if (py_message == RGB_CODE) { py_message = JOINTS_CODE; }
 		}
 	}
 
