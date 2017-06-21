@@ -141,8 +141,17 @@ class Application(tk.Frame):
 				self._form_identified_label_show.config(text=val)
 				self.operation_pending = False
 
+	def drawPoint(self, img, joints, s, color=[255,255,255]):
+		for pos in joints:
+			for i in range(-s,s):
+				for j in range(-s,s):
+					if (pos.x+i > -1 and pos.x+i < 641) and (pos.y+j > -1 and pos.y+j < 481):
+						img[pos.y+j,pos.x+i] = color
+		return img
+
 	# LoadVideoHolder receives a numpy array as a parameter
-	def loadVideoHolder(self, img):
+	def loadVideoHolder(self, img, joints):
+		img = self.drawPoint(img, joints, 3)
 		img = Image.fromarray(img, 'RGB')
 		self.photo = ImageTk.PhotoImage(img)
 		self._video_holder.imgtk = self.photo

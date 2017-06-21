@@ -10,7 +10,7 @@ def guessVal(i):
         return i + 208
     return i - 48
 
-proc = subprocess.Popen("C:\\Users\\Public\\serial.exe",
+proc = subprocess.Popen("C:\\Users\\user\\Documents\\Git\\taolu-enhancer\\taolu-enhancer\\Debug\\serial.exe",
 stdin=subprocess.PIPE,
 stdout=subprocess.PIPE)
 
