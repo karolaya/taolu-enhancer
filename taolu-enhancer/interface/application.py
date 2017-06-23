@@ -1,8 +1,9 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import time
-from utils.definitions import Form
+from utils.definitions import Form,Joints
 from pyserial.connector import Reader
+import cv2
 
 class Application(tk.Frame):
 	def __init__(self, proc, master=tk.Tk()):
@@ -141,17 +142,67 @@ class Application(tk.Frame):
 				self._form_identified_label_show.config(text=val)
 				self.operation_pending = False
 
-	def drawPoint(self, img, joints, s, color=[255,255,255]):
-		for pos in joints:
-			for i in range(-s,s):
-				for j in range(-s,s):
-					if (pos.x+i > -1 and pos.x+i < 640) and (pos.y+j > -1 and pos.y+j < 480):
-						img[pos.y+j,pos.x+i] = color
+	def drawJoints(self, img, joints, r, color = (255,100,185)):
+		if joints != []:
+			for pos in joints:
+				img = cv2.circle(img, pos, r, color, thickness=1, lineType=8, shift=0)
+			#img = cv2.circle(img, joints[18], r, (0,0,0), thickness=2, lineType=8, shift=0)
+
 		return img
 
+	def drawBones(self, img, joints, t, colorl = (0,0,255), colorc = (255,0,0), colorr = (0,255,0)):
+		if joints != []:
+			#head-neck
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_HEAD], joints[Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER], colorc,t)
+			#neck-spine
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER], joints[Joints.NUI_SKELETON_POSITION_SPINE], colorc,t)
+			#spine-hipcenter
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SPINE], joints[Joints.NUI_SKELETON_POSITION_HIP_CENTER], colorc,t)
+
+			#-----left arm-----#
+			#neck-shoulderleft
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER], joints[Joints.NUI_SKELETON_POSITION_SHOULDER_LEFT], colorl,t)
+			#shoulderleft-elbowright
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SHOULDER_LEFT], joints[Joints.NUI_SKELETON_POSITION_ELBOW_LEFT], colorl,t)
+			#elbowleft-wristrigth
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_ELBOW_LEFT], joints[Joints.NUI_SKELETON_POSITION_WRIST_LEFT], colorl,t)
+			#wristleft-handright
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_WRIST_LEFT], joints[Joints.NUI_SKELETON_POSITION_HAND_LEFT], colorl,t)
+
+			#-----right arm-----#
+			#neck-shoulderright
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SHOULDER_CENTER], joints[Joints.NUI_SKELETON_POSITION_SHOULDER_RIGHT], colorr,t)
+			#shoulderright-elbowright
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_SHOULDER_RIGHT], joints[Joints.NUI_SKELETON_POSITION_ELBOW_RIGHT], colorr,t)
+			#elbowright-wristrigth
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_ELBOW_RIGHT], joints[Joints.NUI_SKELETON_POSITION_WRIST_RIGHT], colorr,t)
+			#wristright-handright
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_WRIST_RIGHT], joints[Joints.NUI_SKELETON_POSITION_HAND_RIGHT], colorr,t)
+
+			#-----LEFT leg-----#
+			#hipcenter-hipLEFT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_HIP_CENTER], joints[Joints.NUI_SKELETON_POSITION_HIP_LEFT], colorl,t)
+			#hipLEFT-kneeLEFT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_HIP_LEFT], joints[Joints.NUI_SKELETON_POSITION_KNEE_LEFT], colorl,t)
+			#kneeLEFT-ankleLEFT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_KNEE_LEFT], joints[Joints.NUI_SKELETON_POSITION_ANKLE_LEFT], colorl,t)
+			#ankleLEFT-footLEFT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_ANKLE_LEFT], joints[Joints.NUI_SKELETON_POSITION_FOOT_LEFT], colorl,t)
+
+			#-----RIGHT leg-----#
+			#hipcenter-hipRIGHT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_HIP_CENTER], joints[Joints.NUI_SKELETON_POSITION_HIP_RIGHT], colorr,t)
+			#hipRIGHT-kneeRIGHT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_HIP_RIGHT], joints[Joints.NUI_SKELETON_POSITION_KNEE_RIGHT], colorr,t)
+			#kneeRIGHT-ankleRIGHT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_KNEE_RIGHT], joints[Joints.NUI_SKELETON_POSITION_ANKLE_RIGHT], colorr,t)
+			#ankleRIGHT-footRIGHT
+			img = cv2.line(img, joints[Joints.NUI_SKELETON_POSITION_ANKLE_RIGHT], joints[Joints.NUI_SKELETON_POSITION_FOOT_RIGHT], colorr,t)
+		return img
 	# LoadVideoHolder receives a numpy array as a parameter
 	def loadVideoHolder(self, img, joints):
-		img = self.drawPoint(img, joints, 3)
+		img = self.drawJoints(img, joints, 3)
+		img = self.drawBones(img, joints, 2)
 		img = Image.fromarray(img, 'RGB')
 		self.photo = ImageTk.PhotoImage(img)
 		self._video_holder.imgtk = self.photo

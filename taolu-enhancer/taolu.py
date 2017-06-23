@@ -14,7 +14,7 @@ proc = subprocess.Popen("C:\\Users\\user\\Documents\\Git\\taolu-enhancer\\taolu-
 stdin=subprocess.PIPE,
 stdout=subprocess.PIPE)
 
-Joint2D = namedtuple('Joint2D', ['x', 'y'])
+#Joint2D = namedtuple('Joint2D', ['x', 'y'])
 
 app = App(proc)
 
@@ -42,7 +42,7 @@ def convert3DTo2D(x0, y0, z0):
 	if ypix > 479:
 		ypix = 479
 
-	return Joint2D(x = int(xpix), y = int(ypix)) 
+	return (int(xpix), int(ypix))
 
 i = 0
 joints = list()
@@ -66,13 +66,14 @@ while 1:
 		
 		A = np.dstack([AB, AG, AR])
 		app.loadVideoHolder(A, joints)
+		joints = list()
 		cv2.waitKey(15)
 
 	app.checkPendingOperations()
 	#cv2.imshow('video',A)
-		
 	#print(numeric)
 	#i +=1
+
 	app.update()
 	app.update_idletasks()
 """
