@@ -145,7 +145,7 @@ class Application(tk.Frame):
 		for pos in joints:
 			for i in range(-s,s):
 				for j in range(-s,s):
-					if (pos.x+i > -1 and pos.x+i < 641) and (pos.y+j > -1 and pos.y+j < 481):
+					if (pos.x+i > -1 and pos.x+i < 640) and (pos.y+j > -1 and pos.y+j < 480):
 						img[pos.y+j,pos.x+i] = color
 		return img
 

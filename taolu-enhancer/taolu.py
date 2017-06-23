@@ -18,18 +18,31 @@ Joint2D = namedtuple('Joint2D', ['x', 'y'])
 
 app = App(proc)
 
-def convert3DTo2D(a, b, c):
-	xx = int((a + 2.2)*640/4.4)
-	yy = int((b + 1.6)*480/3.2)
+def convert3DTo2D(x0, y0, z0):
+	xt = x0*320/2.2
+	yt = y0*240/1.6
 
-	if xx > 640:
-		xx = 640
-	if yy > 480:
-		yy = 480
+	angx = 57*xt/640
+	angy = 43*yt/480
+	#print("ax: "+str(angx))
+	#print("ay: "+str(angy))
 
-	xx = xx
-	yy = 480 - yy
-	return Joint2D(x=xx, y=yy) 
+	xr = np.tan(angx*np.pi/180)*640*4.2/(z0)
+	yr = np.tan(angy*np.pi/180)*480*4.2/(z0)
+	#print("xr: "+str(xr))
+	#print("yr: "+str(yr))
+
+	xpix = 320 + xr
+	ypix = np.abs(yr-240)
+	#print("xpix: "+str(xpix))
+	#print("ypix: "+str(ypix))
+
+	if xpix > 639:
+		xpix = 639
+	if ypix > 479:
+		ypix = 479
+
+	return Joint2D(x = int(xpix), y = int(ypix)) 
 
 i = 0
 joints = list()
@@ -40,7 +53,7 @@ while 1:
 	if len(line) > 60 and len(line) < 1000:
 		joints = list()
 		tam = [i.split(',') for i in line.decode('utf-8').split(';')][:-1]
-		print(tam)
+		#print(tam)
 		for t in tam:
 			joints.append(convert3DTo2D(float(t[0]), float(t[1]), float(t[2])))
 
