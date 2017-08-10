@@ -27,13 +27,13 @@ def convert3DTo2D(x0, y0, z0):
 	#print("ax: "+str(angx))
 	#print("ay: "+str(angy))
 
-	xr = np.tan(angx*np.pi/180)*640*4.2/(z0)
-	yr = np.tan(angy*np.pi/180)*480*4.2/(z0)
+	xr = np.tan(angx*np.pi/180)*640*4/(z0)
+	yr = np.tan(angy*np.pi/180)*480*4.5/(z0)
 	#print("xr: "+str(xr))
 	#print("yr: "+str(yr))
 
 	xpix = 320 + xr
-	ypix = np.abs(yr-240)
+	ypix = np.abs(yr-240)+15
 	#print("xpix: "+str(xpix))
 	#print("ypix: "+str(ypix))
 
@@ -65,7 +65,7 @@ while 1:
 		AB = numeric[2::3].reshape((480,640))
 		
 		A = np.dstack([AB, AG, AR])
-		app.loadVideoHolder(A, joints)
+		app.loadVideoHolder(A, joints[::-1])
 		joints = list()
 		cv2.waitKey(15)
 
