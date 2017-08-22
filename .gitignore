@@ -7,3 +7,6 @@ ipch/
 *.sdf
 *.cachefile
 *.db
+
+*.sublime-project
+*.sublime-workspace
